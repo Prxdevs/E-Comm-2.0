@@ -1,9 +1,14 @@
 import React, { useEffect ,useState} from 'react';
-import { Box, Heading, Text, Fade,Stack,Button,SimpleGrid,Card, CardHeader,Flex, CardBody, CardFooter,Image,
-Divider,ButtonGroup } from '@chakra-ui/react';  
-import sdsd from './sdsd.png';
-import dddd from './dddd.webp';
-import Slider from 'react-slick';
+import {
+  Flex,
+  Box,
+  Image,
+  Heading,
+  Text,
+  Button,
+} from '@chakra-ui/react';
+
+
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
 import { useParams } from 'react-router-dom';
@@ -40,19 +45,42 @@ const ProductDetails = () => {
     
   return ( <>
 
-    <Box display={'flex'}>
-        <Box >
-            {product.images.map((image, index) => (
-             <Image height='auto' width='100%' src={image.url} />
-             ))}
+
+<Flex
+        direction={['column', 'column', 'row']} // Use column direction for small screens, row direction for larger screens
+        maxW="1400px"
+        mx="auto"
+        p="20px"
+        bg="white"
+        boxShadow="lg"
+        borderRadius="8px"
+        mt="20px"
+      >
+        <Box flex={['none', 1]} mb={['20px', 0]}> {/* Use flex to control the size, mb to add margin only for small screens */}
+          <Image src={product.images[0].url} alt="Product Image" borderRadius="8px" mb="20px" w="100%" h="auto" />
         </Box>
 
-        <Box>
-            <Heading> {product.name}</Heading>
-           
+        <Box ml={['0', '20px']} textAlign="left" flex="1">
+          <Heading color="gray.800" mb="4">
+            {product.name}
+          </Heading>
+          <Text color="gray.600" mb="4">
+            {product.description}
+          </Text>
+          <Text color="orange.500" fontSize="xl" fontWeight="bold" mb="4">
+            {product.price}
+          </Text>
+          <Button
+            colorScheme="orange"
+            variant="solid"
+            size="md"
+            borderRadius="4px"
+            cursor="pointer"
+          >
+            Buy Now
+          </Button>
         </Box>
-    
-    </Box>
+      </Flex>
       
   </>
   );

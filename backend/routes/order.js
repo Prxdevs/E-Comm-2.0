@@ -8,7 +8,7 @@ const Order = require('../models/order');
 
 router.post('/create-order', async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming you have user information in req.user
+    const userId = req.user._id;
 
     const user = await User.findById(userId).populate('cart.productId');
 
@@ -16,27 +16,31 @@ router.post('/create-order', async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const productsInCart = user.cart.filter(item => item.productId);
+    const { address, city, pincode, cart } = req.body;
 
-    if (productsInCart.length === 0) {
+    if (!cart || cart.length === 0) {
       return res.status(400).json({ message: 'Cart is empty. Add products to your cart first.' });
     }
 
-    const totalAmount = productsInCart.reduce((total, item) => {
-      const product = item.productId;
+    const totalAmount = cart.reduce((total, item) => {
+      const product = user.cart.find(cartItem => cartItem.productId == item.productId).productId;
       return total + product.price * item.quantity;
     }, 0);
 
     const order = new Order({
-      products: productsInCart.map(item => ({
-        productId: item.productId._id,
+      userId: userId, // Add the user ID to the order
+      products: cart.map(item => ({
+        productId: item.productId,
         quantity: item.quantity,
+        address,
+        city,
+        pincode,
       })),
       totalAmount,
     });
 
     user.orders.push(order);
-    user.cart = []; // Clear the user's cart after creating the order
+    user.cart = [];
 
     await Promise.all([order.save(), user.save()]);
 
@@ -46,6 +50,7 @@ router.post('/create-order', async (req, res) => {
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
 
 router.get('/get-orders', async (req, res) => {
   try {

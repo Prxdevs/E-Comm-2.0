@@ -7,6 +7,9 @@ const orderSchema = new mongoose.Schema({
     {
       productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
       quantity: { type: Number, default: 1 },
+      address:{type:String},
+      city:{type:String},
+      pincode:{type:Number},
     },
   ],
   totalAmount: { type: Number, required: true },

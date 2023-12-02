@@ -12,6 +12,16 @@ router.get('/products', async (req, res) => {
   }
 });
 
+router.get('/products', async (req, res) => {
+  try {
+    const products = await Product.find();
+    res.json(products);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
 router.post('/addproduct', async (req, res) => {
   try {
     const { name, category, rating, price, description, imageUrl, stocks,tag,sizes } = req.body;

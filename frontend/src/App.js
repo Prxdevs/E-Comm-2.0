@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/header';
 import Home from './Pages/Home';
 import About from './Pages/About';
-import ProductDetails from './Pages/ProductDetails';
+import ProductDetails from './Pages/ProductDetails/index.js';
 import Footer from './components/footer';
 
 function App() {
