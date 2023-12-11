@@ -14,8 +14,21 @@ require('dotenv').config();
 const app = express();
 const { PORT, MONGODB_URI } = process.env;
 
+const corsOptions = {
+  origin: 'http://localhost:3000', // Replace with your allowed origin
+  credentials: true, // Explicitly enable credentials
+  optionsSuccessStatus: 200,
+  allowedHeaders: 'Content-Type, Authorization', // Add any other required headers
+  cookie: {
+    secure: false, // Set to true if using HTTPS
+    maxAge: 3600000, // Session timeout in milliseconds (1 hour in this case)
+  },
+};
+
+
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(bodyParser.json());
 
 // Routes
