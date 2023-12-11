@@ -9,7 +9,8 @@ import dddd from './dddd.webp';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-const Home = () => {
+
+const Home = ({  }) => {
   const sliderSettings = {
     // dots: true,
     infinite: true,
@@ -38,7 +39,7 @@ const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [uniqueCategories, setUniqueCategories] = useState([]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -70,6 +71,15 @@ const Home = () => {
     ? products.filter(product => product.tag === selectedTag)
     : products;
    
+
+    useEffect(() => {
+      // Extract unique categories from products
+      const categoriesSet = new Set(products.map((product) => product.category));
+      const uniqueCategoriesArray = [...categoriesSet];
+      setUniqueCategories(uniqueCategoriesArray);
+    }, [products]);
+
+    
   return ( <>
     <Box overflowX="hidden" overflowY="hidden">
       {/* First Slider with Image Paths */}
@@ -94,7 +104,10 @@ const Home = () => {
         ))}
       </Slider>
 
-      <Stack
+      
+    </Box>
+
+    <Stack
       direction='column'
       spacing={4}
       align='center' 
@@ -111,8 +124,6 @@ const Home = () => {
         </Button>
       </Stack>
       </Stack>
-    </Box>
-
     <Stack
       spacing={4}
       align='center' 
@@ -153,7 +164,56 @@ const Home = () => {
     </SimpleGrid>
 
     </Stack>
+<br></br>
+<br></br>
+    {/* //category */}
+    <Stack
+      direction='column'
+      spacing={4}
+      align='center' 
+      justify='center'>
+      <Stack direction='row' spacing={4}  mb={4}>
+        <Heading colorScheme='black' variant='outline' rounded='full' > All Categories</Heading>
+      </Stack>
+      </Stack>
+      <br></br>
+      <br></br>
     
+      <Stack
+      spacing={4}
+      align='center' 
+      justify='center'>
+      
+      <Stack spacing={4} align='center' justify='center'>
+        {/* Display unique categories and images */}
+          
+        <SimpleGrid columns={[1, 2, 4]} spacing={4} alignItems='stretch'>
+            {uniqueCategories.map((category) => (
+                  <React.Fragment key={category}>
+                  {products
+                    .filter((product) => product.category === category)
+                    .map((product) => (
+                      <Link
+                      to={`/collection?category=${category}`}
+                        key={product._id}
+                      >
+                        <Card shadow={'none'} maxW={['100%', '100%', 'xs']}>
+                          <CardBody p={0}>
+                            {product.images.map((image, index) => (
+                              <Image height='auto' width='100%' src={image.url} key={index} />
+                            ))}
+                            <Stack direction='column' align='center' justify='center'>
+                              <Heading size='sm'>{category}</Heading>
+                            </Stack>
+                          </CardBody>
+                        </Card>
+                      </Link>
+                    ))}
+              </React.Fragment>
+            ))}
+        </SimpleGrid>
+      </Stack>
+      </Stack>
   </>
   );
 };
