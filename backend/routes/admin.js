@@ -5,14 +5,23 @@ const User = require('../models/user');
 const Order = require('../models/order');
 const multer = require('multer');
 const path = require ('path')
+const fs = require('fs');
+
 const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'products/'); // Specify the directory where files should be saved
+  destination: (req, file, cb) => {
+    const productName = req.body.name;
+    const productDirectory = `products/${productName}`; // Set the destination folder for uploaded files
+    if (!fs.existsSync(productDirectory)) {
+      fs.mkdirSync(productDirectory, { recursive: true });
+    }
+
+    cb(null, productDirectory);
+
   },
-  filename: function (req, file, cb) {
-    // Use a unique filename, or keep the original filename
-    cb(null, Date.now() + '-' + file.originalname);
-  }
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, file.fieldname + '-' + uniqueSuffix + '.' + file.originalname.split('.').pop());
+  },
 });
 
 const upload = multer({ storage: storage });
@@ -52,8 +61,6 @@ router.post('/logout', (req, res) => {
   res.json({ message: 'Logout successful' });
 });
 
-
-
 router.get('/products',async (req, res) => {
   try {
     const products = await Product.find();
@@ -64,9 +71,17 @@ router.get('/products',async (req, res) => {
   }
 });
 
-router.post('/addproduct', upload.single('image'), async (req, res) => {
+router.post('/addproduct',  upload.array('image'), async (req, res) => {
   try {
-    const { name, category, rating, price, description, stocks, tag, sizes } = req.body;
+    const { name, category, rating, price, description, stocks, tag, sizes,colors,gender, } = req.body;
+    const directoryPath = path.join(__dirname,  '../products', name);
+    // Create the directory if it doesn't exist
+    if (!fs.existsSync(directoryPath)) {
+      fs.mkdirSync(directoryPath, { recursive: true });
+    }
+
+    const imagePath = req.files.map(file => `/products/${name}/${file.filename}`);
+    console.log(imagePath)
     const product = new Product({
       name,
       category,
@@ -76,7 +91,9 @@ router.post('/addproduct', upload.single('image'), async (req, res) => {
       stocks,
       tag,
       sizes,
-      image: req.file.filename, // Save the filename instead of the buffer
+      colors,
+      gender,
+      image: imagePath, // Save the filename instead of the buffer
     });
 
     await Product.create(product);
@@ -87,7 +104,40 @@ router.post('/addproduct', upload.single('image'), async (req, res) => {
   }
 });
 
-router.get('/users', isAuthenticated,async (req, res) => {
+router.delete('/deleteproduct/:productId', async (req, res) => {
+  try {
+    const productId = req.params.productId;
+
+    // Check if the product exists
+    const existingProduct = await Product.findById(productId);
+    if (!existingProduct) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    if (!Array.isArray(existingProduct.image)) {
+      return res.status(500).json({ message: 'Invalid image paths.' });
+    }
+    existingProduct.image.forEach((imagePath) => {
+      try {
+        const fullPath = path.join(__dirname, '../', imagePath);
+        fs.unlinkSync(fullPath);
+      } catch (error) {
+        // Handle the unlink error (e.g., file not found) or log it
+        console.error(`Error deleting file: ${error.message}`);
+      }
+    });
+
+    // Delete the product from the database
+    await Product.findByIdAndDelete(productId);
+
+    res.status(200).json({ message: 'Product deleted successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+router.get('/users', async (req, res) => {
   try {
     const users = await User.find();
     res.json(users);
@@ -107,37 +157,47 @@ router.get('/orders', isAuthenticated,async (req, res) => {
   }
 });
 
-
-router.put('/updateproduct/:id',  async (req, res) => {
+router.put('/updateproduct/:productId', async (req, res) => {
   try {
-    const productId = req.params.id;
-    const { name, category, rating, price, description, imageUrl, stocks, tag, sizes } = req.body;
-
-    // Find the product by ID
-    const product = await Product.findById(productId);
-
-    if (!product) {
+    const productId = req.params.productId;
+    console.log(productId)
+    // Check if the product exists
+    const existingProduct = await Product.findById(productId);
+    if (!existingProduct) {
       return res.status(404).json({ message: 'Product not found.' });
     }
 
-    // Update product details
-    product.name = name;
-    product.category = category;
-    product.rating = rating;
-    product.price = price;
-    product.description = description;
-    product.imageUrl = imageUrl;
-    product.stocks = stocks;
-    product.tag = tag;
-    product.sizes = sizes;
+    // Update the product properties
+    const { name, category, rating, price, description, stocks, tag, sizes } = req.body;
+    console.log(req.body)
+    existingProduct.name = name || existingProduct.name;
+    existingProduct.category = category || existingProduct.category;
+    existingProduct.rating = rating || existingProduct.rating;
+    existingProduct.price = price || existingProduct.price;
+    existingProduct.description = description || existingProduct.description;
+    existingProduct.stocks = stocks || existingProduct.stocks;
+    existingProduct.tag = tag || existingProduct.tag;
+    existingProduct.sizes = sizes || existingProduct.sizes;
 
-    // Save the updated product
-    await product.save();
+    // Check if a new image is provided
+    if (req.file) {
+      // Remove the previous image
+      const previousImagePath = path.join(__dirname, '../', existingProduct.image);
+      await fs.unlink(previousImagePath);
 
-    res.json({ message: 'Product updated successfully.' });
+      // Update the product with the new image path
+      const newImagePath = `/products/${req.file.filename}`;
+      existingProduct.image = newImagePath;
+    }
+
+    // Save the updated product to the database
+    await existingProduct.save();
+
+    res.status(200).json({ message: 'Product updated successfully.' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
+
 module.exports = router;

@@ -11,11 +11,13 @@ const orderSchema = new mongoose.Schema({
     },
   ],
   totalAmount: { type: Number, required: true },
+  paymentId: { type: String }, // Add payment ID field
+  paymentStatus: { type: String }, // Add payment status field
   createdAt: { type: Date, default: Date.now },
 });
 
 const userSchema = new mongoose.Schema({
-  username: { type: String, required: true, unique: true },
+  email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
   cart: [
     {

@@ -4,6 +4,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const path = require ('path')
 const { router: authRoutes, checkTokenBlacklist } = require('./routes/auth');
 const productRoutes = require('./routes/product');
 const cartRoutes = require('./routes/cart');
@@ -15,14 +16,8 @@ const app = express();
 const { PORT, MONGODB_URI } = process.env;
 
 const corsOptions = {
-  origin: 'http://localhost:3000', // Replace with your allowed origin
+  origin: 'http://localhost:3002', // Replace with your allowed origin
   credentials: true, // Explicitly enable credentials
-  optionsSuccessStatus: 200,
-  allowedHeaders: 'Content-Type, Authorization', // Add any other required headers
-  cookie: {
-    secure: false, // Set to true if using HTTPS
-    maxAge: 3600000, // Session timeout in milliseconds (1 hour in this case)
-  },
 };
 
 
@@ -30,16 +25,18 @@ const corsOptions = {
 // Middleware
 app.use(cors(corsOptions));
 app.use(bodyParser.json());
-
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }))
 // Routes
+app.use('/products', express.static(path.join(__dirname, 'products')));
 app.use('/auth', authRoutes);
 app.use('/admin',  adminRoutes); //Admin Routes For AdminPanel
-app.use('/products',  productRoutes);
-app.use('/cart', checkTokenBlacklist, cartRoutes);
-app.use('/orders', checkTokenBlacklist, orderRoutes); // Use checkTokenBlacklist middleware for order routes
+app.use('/product',  productRoutes);
+app.use('/cart',  cartRoutes);
+app.use('/orders',  orderRoutes); // Use checkTokenBlacklist middleware for order routes
 
 // MongoDB connection
-mongoose.connect(MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(MONGODB_URI);
 
 // Start the server
 app.listen(PORT, () => {

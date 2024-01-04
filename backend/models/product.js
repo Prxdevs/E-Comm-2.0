@@ -6,10 +6,11 @@ const productSchema = new mongoose.Schema({
   rating: { type: Number, default: 0 },
   price: { type: Number},
   description: { type: String },
-  image: { type: String },
-  imageUrl: { type: String },
+  image: [{ type: String }],
   stocks: { type: Number, default: 0 },
-  tag: { type:String },
-  sizes: [{ type: String }]
+  colors: [{ type: String }],
+  tag: { type:String }, // popular, featured, deal of the day, seasonal items.
+  sizes: [{ type: String }],
+  gender: { type: String }
 });
 module.exports = mongoose.model('Product', productSchema);

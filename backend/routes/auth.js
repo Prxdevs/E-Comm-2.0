@@ -8,8 +8,8 @@ const tokenBlacklist = [];
 
 router.post('/register', async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const user = new User({ username, password });
+    const { email, password } = req.body;
+    const user = new User({ email, password });
     await user.save();
 
     res.status(201).json({ message: 'User registered successfully.' });
@@ -23,8 +23,8 @@ router.post('/register', async (req, res) => {
 
 router.post('/login', async (req, res) => {
     try {
-      const { username, password } = req.body;
-      const user = await User.findOne({ username });
+      const { email, password } = req.body;
+      const user = await User.findOne({ email });
   
       if (!user) {
         return res.status(401).json({ message: 'Invalid credentials.' });
