@@ -66,11 +66,14 @@ const Header = () => {
       align="center"
       justifyContent="space-between"
     >
-      <HStack spacing={4}>
+      <HStack spacing={10}>
         <IconButton
           icon={<HamburgerIcon fontSize="2xl" />}
           variant="ghost"
           onClick={handleToggle}
+        />
+        <IconButton
+          visibility='hidden'
         />
 
         {/* Sidebar Drawer */}

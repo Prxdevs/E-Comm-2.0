@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Text, UnorderedList, ListItem, Input, Button } from '@chakra-ui/react';
-
+import { Box, Heading, Text, UnorderedList, ListItem, Input, Button, Container, FormControl, FormLabel, Stack } from '@chakra-ui/react';
+import "@fontsource/pt-sans";
 const UserProfile = () => {
   const [user, setUser] = useState(null);
   const [userOrders, setUserOrders] = useState([]);
@@ -136,30 +136,31 @@ const UserProfile = () => {
   const toggleForm = () => {
     setShowSignupForm(!showSignupForm);
   };
+  
   return (
     <Box p={4}>
       {user ? (
-        <>
-          <Box p={4}>
-      <Heading as="h2" size="xl" mb={4}>
+        <Container centerContent>
+          <Box p={4} >
+      <Heading as="h2" size="lg" mb={4}>
         User Profile
       </Heading>
       <Box mb={4}>
-        <Heading as="h3" size="lg" mb={2}>
+        <Heading as="h3" size="sm" mb={2}>
         Email: {user.email}
         </Heading>
-        <Heading as="h3" size="lg" mb={2}>
+        <Heading as="h3" size="sm" mb={2}>
         Name: {user.name}
         </Heading>
-        <Heading as="h3" size="lg" mb={2}>
+        <Heading as="h3" size="sm" mb={2}>
         Mobile: {user.mobile}
         </Heading>
-        <Heading as="h3" size="lg" mb={2}>
+        <Heading as="h3" size="sm" mb={2}>
         DOB: {user.dob}
         </Heading>
       </Box>
       <Box>
-        <Heading as="h3" size="lg" mb={2}>
+        <Heading as="h3" size="sm" mb={2}>
           Order History
         </Heading>
         <UnorderedList>
@@ -182,15 +183,15 @@ const UserProfile = () => {
           </Box>
       </Box>
     </Box>
-        </>
+        </Container>
       ) : (
         <>
         {showSignupForm ? (
-          <>
-           <Heading as="h2" size="xl" mb={4}>
+           <Container centerContent mt={20}>
+           <Heading as="h2" size="xl" mb={4} fontFamily="PT Sans" fontWeight={400}>
                 Signup
                 </Heading>
-                <Box mb={4}>
+                <Box mb={4} >
                 <Input
                     type="email"
                     placeholder="Email"
@@ -230,18 +231,20 @@ const UserProfile = () => {
                     onChange={(e) => setSignupForm({ ...signupForm, dob: e.target.value })}
                     mt={2}
                 />
+                <Stack>
                 <Button onClick={handleSignup} mt={4}>
                     Signup
                 </Button>
                 <Text mt={2} onClick={toggleForm} cursor="pointer" color="blue.500">
                     Already registered? Login
                 </Text>
+                </Stack>
                 </Box>
-          </>
+          </Container>
         ) : (
-          <>
-            <Heading as="h2" size="xl" mb={4}>
-              Login
+          <Container centerContent mt={20}>
+            <Heading as="h2" size="xl" mb={4} fontFamily="PT Sans" fontWeight={400}>
+              LOGIN
             </Heading>
             <Box mb={4}>
               <Input
@@ -257,17 +260,44 @@ const UserProfile = () => {
                 onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                 mt={2}
               />
+              <Stack>
               <Button onClick={handleLogin} mt={4}>
                 Login
               </Button>
               <Text mt={2} onClick={toggleForm} cursor="pointer" color="blue.500">
                 Not registered? Sign Up
               </Text>
+              </Stack>
             </Box>
-          </>
+          </Container>
         )}
       </>
       )}
+         {/* <Container centerContent>
+      <Box p={8} borderWidth={1} borderRadius="md" boxShadow="md" textAlign="center">
+        <FormControl id="email" mb={4}>
+          <FormLabel>Email address</FormLabel>
+          <Input
+            type="email"
+            placeholder="Enter your email"
+            // value={email}
+            // onChange={(e) => setEmail(e.target.value)}
+          />
+        </FormControl>
+        <FormControl id="password" mb={4}>
+          <FormLabel>Password</FormLabel>
+          <Input
+            type="password"
+            placeholder="Enter your password"
+            // value={password}
+            // onChange={(e) => setPassword(e.target.value)}
+          />
+        </FormControl>
+        <Button colorScheme="teal" >
+          Login
+        </Button>
+      </Box>
+    </Container> */}
     </Box>
   );
 };

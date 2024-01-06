@@ -25,8 +25,9 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
+import "@fontsource/pt-sans";
 
-const Home = ({}) => {
+const Home = ({ }) => {
   const sliderSettings = {
     // dots: true,
     infinite: true,
@@ -55,6 +56,17 @@ const Home = ({}) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [uniqueCategories, setUniqueCategories] = useState([]);
+
+  //  mouse hover on card
+  const [hoveredProductId, setHoveredProductId] = useState(null);
+
+  const handleHover = (productId) => {
+    setHoveredProductId(productId);
+  };
+
+  const handleHoverOut = () => {
+    setHoveredProductId(null);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -179,19 +191,30 @@ const Home = ({}) => {
               <Card shadow={"none"} maxW={["100%", "100%", "xs"]}>
                 <CardBody p={0}>
                   <Stack sx={{ objectFit: "contain" }}>
+                    {/* <Image
+                      height="366px"
+                      width="244px"
+                      src={`http://localhost:4000${product.image[0]}`}
+                      onMouseOver={handlelala}
+                      // Replace 'your-base-url' with the actual base URL
+                      // key={index}
+                      alt={product.name}
+                    /> */}
                     <Image
                       height="366px"
                       width="244px"
-                      src={`http://localhost:4000${product.image[0]}`} // Replace 'your-base-url' with the actual base URL
-                      // key={index}
+                      src={`http://localhost:4000${hoveredProductId === product._id ? product.image[1] : product.image[0]}`}
+                      onMouseOver={() => handleHover(product._id)}
+                      onMouseOut={handleHoverOut}
                       alt={product.name}
                     />
                   </Stack>
                   <Stack direction="column" align="center" justify="center">
-                    <Heading size="sm">{product.name}</Heading>
+                    {/* <Heading size="sm" fontFamily="PT Sans" fontWeight={400}>{product.name}</Heading>
                     <Text color="blue.600" mb={2} fontSize="x">
                       ₹ {product.price}
-                    </Text>
+                    </Text> */}
+                    <Text marginBottom={'5px'} size="xs">{product.name}<br /><Text fontSize='xs'>₹ {product.price}</Text></Text>
                   </Stack>
                 </CardBody>
 
