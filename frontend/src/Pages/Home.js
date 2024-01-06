@@ -166,8 +166,8 @@ const Home = ({}) => {
           </Button>
         </Stack>
       </Stack>
-      <Stack spacing={4} align="center" justify="center">
-        <SimpleGrid columns={[1, 2, 4]} spacing={4} alignItems="stretch">
+      <Stack spacing={4} align="center" justify="center" marginTop={2}>
+        <SimpleGrid columns={[1, 2, 5]} spacing={4} alignItems="stretch">
           {filteredProducts.map((product) => (
             <Link
               to={{
@@ -180,8 +180,8 @@ const Home = ({}) => {
                 <CardBody p={0}>
                   <Stack sx={{ objectFit: "contain" }}>
                     <Image
-                      height="400px"
-                      width="100%"
+                      height="366px"
+                      width="244px"
                       src={`http://localhost:4000${product.image[0]}`} // Replace 'your-base-url' with the actual base URL
                       // key={index}
                       alt={product.name}
@@ -210,6 +210,7 @@ const Home = ({}) => {
                     {product.sizes[0].split(",").map((size, index) => (
                       <Button
                         key={index}
+                        size={"xs"}
                         colorScheme="black"
                         borderColor={"#e8e8e1"}
                         variant="outline"

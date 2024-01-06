@@ -332,26 +332,82 @@ const Collection = ({  }) => {
         
         {/* Product cards */}
         <Stack spacing={4} align="center" justify="center" ml={{ base: '0', md: '4' }} flex="1">
-          <SimpleGrid columns={[1, 2, 4]} spacing={4} alignItems="stretch">
+          <SimpleGrid columns={[1, 2, 5]} spacing={4} alignItems="stretch">
             {filteredProducts.map((product) => (
+              // <Link
+              //   to={{ pathname: `/productdetails/${product._id}`, state: { product } }}
+              //   key={product._id}
+              // >
+              //   <Card shadow="none" maxW={['100%', '100%', 'xs']}>
+              //     <CardBody p={0}>
+              //       {/* {product.images.map((image, index) => ( */}
+              //         <Image height="auto" width="100%" src={`http://localhost:4000${product.image[0]}`}/>
+              //         {/* <h1>{`http://localhost:4000${product.image}`}</h1> */}
+              //       {/* ))} */}
+              //       <Stack direction="column" align="center" justify="center">
+              //         {/* Product details */}
+              //       </Stack>
+              //     </CardBody>
+              //     <CardFooter p={0} justifyContent="center" mb={2} alignItems="center">
+              //       {/* Additional details */}
+              //     </CardFooter>
+              //   </Card>
+              // </Link>
               <Link
-                to={{ pathname: `/productdetails/${product._id}`, state: { product } }}
-                key={product._id}
-              >
-                <Card shadow="none" maxW={['100%', '100%', 'xs']}>
-                  <CardBody p={0}>
-                    {product.images.map((image, index) => (
-                      <Image height="auto" width="100%" src={image.url} key={index} />
+              to={{
+                pathname: `/productdetails/${product._id}`,
+                state: { product },
+              }}
+              key={product._id}
+            >
+              <Card shadow={"none"} maxW={["100%", "100%", "xs"]}>
+                <CardBody p={0}>
+                  <Stack sx={{ objectFit: "contain" }}>
+                    <Image
+                      height="360px"
+                      width="100%"
+                      src={`http://localhost:4000${product.image[0]}`} // Replace 'your-base-url' with the actual base URL
+                      // key={index}
+                      alt={product.name}
+                    />
+                  </Stack>
+                  <Stack direction="column" align="center" justify="center" justifyContent='space-between'>
+                    <Text marginBottom={'5px'} size="xs">{product.name}<br/><Text fontSize='xs'>₹ {product.price}</Text></Text>
+                    {/* <Text color="blue.600" mb={2} fontSize="xs">
+                      ₹ {product.price}
+                    </Text> */}
+                  </Stack>
+                </CardBody>
+
+                <CardFooter
+                  p={0}
+                  justifyContent='center'
+                  mb={2}
+                  align="left"
+                >
+                  <SimpleGrid
+                    // columns={[5, 5, 4, 5]}
+                    columns={[4]}
+                    spacing={3}
+                    alignItems="stretch"
+                  >
+                    {product.sizes[0].split(",").map((size, index) => (
+                      <Button
+                        key={index}
+                        size={"xs"}
+                        colorScheme="black"
+                        borderColor={"#e8e8e1"}
+                        variant="outline"
+                        rounded="none"
+                      >
+                        {size.trim()}{" "}
+                        {/* Use trim to remove any leading/trailing whitespace */}
+                      </Button>
                     ))}
-                    <Stack direction="column" align="center" justify="center">
-                      {/* Product details */}
-                    </Stack>
-                  </CardBody>
-                  <CardFooter p={0} justifyContent="center" mb={2} alignItems="center">
-                    {/* Additional details */}
-                  </CardFooter>
-                </Card>
-              </Link>
+                  </SimpleGrid>
+                </CardFooter>
+              </Card>
+            </Link>
             ))}
           </SimpleGrid>
         </Stack>
