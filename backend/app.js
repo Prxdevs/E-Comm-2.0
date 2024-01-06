@@ -16,7 +16,7 @@ const app = express();
 const { PORT, MONGODB_URI } = process.env;
 
 const corsOptions = {
-  origin: 'http://localhost:3002', // Replace with your allowed origin
+  origin: ['http://localhost:3000', 'http://localhost:3001'], // Replace with your allowed origin
   credentials: true, // Explicitly enable credentials
 };
 

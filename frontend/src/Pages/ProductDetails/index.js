@@ -24,7 +24,7 @@ import Slider from 'react-slick';
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { useParams } from "react-router-dom";
-import ReactImageMagnify from 'react-image-magnify';
+
 
 
 const ProductDetails = () => {
@@ -47,7 +47,7 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
       try {
         const response = await fetch(
-          `http://192.168.29.151:4000/product/${productId}`
+          `http://localhost:4000/product/${productId}`
         );
 
         if (!response.ok) {
@@ -70,7 +70,7 @@ const ProductDetails = () => {
   const addToCart = async () => {
     try {
       // Call your cart API to add the product to the cart
-      const response = await fetch("http://192.168.29.151:4000/cart/add", {
+      const response = await fetch("http://localhost:4000/cart/add-to-cart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

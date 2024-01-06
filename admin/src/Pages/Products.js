@@ -84,7 +84,7 @@ const ProductPage = () => {
       console.log('FormData for Backend:', formDataForBackend);  
   
       const response = await axios.put(
-        `http://localhost:3999/admin/updateproduct/${selectedProduct._id}`,
+        `http://localhost:4000/admin/updateproduct/${selectedProduct._id}`,
         formDataForBackend,
         {
           withCredentials: true,
@@ -109,7 +109,7 @@ const ProductPage = () => {
 
   const fetchProducts = async () => {
     try {
-      const response = await axios.get('http://localhost:3999/admin/products', {
+      const response = await axios.get('http://localhost:4000/admin/products', {
           withCredentials: true,
         });
 
@@ -169,7 +169,7 @@ const ProductPage = () => {
         }
       }
       console.log('FormData for Backend:', formDataForBackend);
-      const response = await axios.post('http://localhost:3999/admin/addproduct', formDataForBackend, {
+      const response = await axios.post('http://localhost:4000/admin/addproduct', formDataForBackend, {
         withCredentials: true,
         headers: {
           'Content-Type': 'multipart/form-data',
@@ -189,7 +189,7 @@ const ProductPage = () => {
 
   const handleProductDelete = async (productId) => {
     try {
-      const response = await fetch(`http://localhost:3999/admin/deleteproduct/${productId}`, {
+      const response = await fetch(`http://localhost:4000/admin/deleteproduct/${productId}`, {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
@@ -237,7 +237,7 @@ const ProductPage = () => {
             {products.map((product) => (
               <Tr key={product._id}>
                 <Td>{product.name}</Td>
-                <Td><Image borderRadius={5} src={`http://localhost:3999${product.image[0]}`} height={'60px'} width={'80px'} /></Td>
+                <Td><Image borderRadius={5} src={`http://localhost:4000${product.image[0]}`} height={'60px'} width={'80px'} /></Td>
                 <Td>{product.category}</Td>
                 <Td>{product.tag}</Td>
                 <Td>₹ {product.price}</Td>

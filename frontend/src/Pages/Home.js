@@ -59,7 +59,7 @@ const Home = ({}) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://192.168.29.151:4000/product", {
+        const response = await axios.get("http://localhost:4000/product", {
           withCredentials: true,
         });
 

@@ -47,7 +47,7 @@ const Collection = ({  }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:3999/products');
+        const response = await fetch('http://localhost:4000/product');
         
         if (!response.ok) {
           throw new Error(`Network response was not ok: ${response.status}`);
