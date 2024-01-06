@@ -202,7 +202,8 @@ const Home = ({}) => {
                   alignItems="center"
                 >
                   <SimpleGrid
-                    columns={[5, 5, 4, 5]}
+                    // columns={[5, 5, 4, 5]}
+                    columns={[4]}
                     spacing={3}
                     alignItems="stretch"
                   >

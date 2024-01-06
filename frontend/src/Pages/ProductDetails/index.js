@@ -194,10 +194,10 @@ const ProductDetails = () => {
           <Heading color="gray.800" mb="4">
             {product.name}
           </Heading>
-          <Text color="orange.500" fontSize="xl" fontWeight="bold" mb="1">
+          <Text color="black.500" fontSize="xl" fontWeight="bold" mb="1">
             Rs. {product.price}
           </Text>
-          <Text color="orange.500" fontSize="sm" fontWeight="light" mb="4">
+          <Text color="black.600" fontSize="sm" fontWeight="light" mb="4">
             (incl. of all taxes)
           </Text>
 
@@ -288,7 +288,9 @@ const ProductDetails = () => {
               </Text>
 
               <Button
-                colorScheme="orange"
+              bg={"black"}
+              color={"white"}
+              colorScheme="black"
                 variant="solid"
                 size="md"
                 borderRadius="1px"
@@ -304,8 +306,8 @@ const ProductDetails = () => {
               </Button>
 
               <Button
-                colorScheme="teal"
-                variant="solid"
+                colorScheme="black"
+                variant="outline"
                 size="md"
                 borderRadius="1px"
                 cursor="pointer"
