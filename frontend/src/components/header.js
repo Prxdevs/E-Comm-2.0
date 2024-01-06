@@ -78,7 +78,10 @@ const Header = () => {
           <DrawerOverlay>
             <DrawerContent>
               <DrawerCloseButton />
+              <Link to="/profile">
               <DrawerHeader>Login</DrawerHeader>
+              </Link>
+             
               <Divider />
               <DrawerBody>
                 {/* Add your sidebar content here */}
@@ -179,8 +182,10 @@ const Header = () => {
 
       <Box display={"flex"}>
         <IconButton icon={<Search2Icon fontSize="xl" />} variant="ghost" />
-
+        <Link to="/profile">
         <IconButton icon={<FaUser fontSize="2xl" />} variant="ghost" />
+        </Link>
+        
         <IconButton
           icon={<FaShoppingCart fontSize="2xl" />}
           variant="ghost"

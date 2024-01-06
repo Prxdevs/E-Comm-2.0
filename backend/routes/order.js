@@ -5,6 +5,8 @@ const router = express.Router();
 const User = require('../models/user');
 const Product = require('../models/product');
 const Order = require('../models/order');
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('dotenv').config().parsed;
 
 router.post('/checkout', async (req, res) => {
   try {
@@ -75,8 +77,17 @@ router.post('/checkout', async (req, res) => {
 
 router.get('/get-orders', async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming you have user information in req.user
+    const token = req.headers.authorization.split(' ')[1];
+    console.log('Received Token:', token);
 
+    const decodedToken = jwt.verify(token, JWT_SECRET);
+    console.log('Decoded Token:', decodedToken);
+
+    if (!decodedToken || !decodedToken.userId) {
+      return res.status(401).json({ message: 'User not authenticated.' });
+    }
+
+    const userId = decodedToken.userId;
     const user = await User.findById(userId).populate('orders');
 
     if (!user) {
@@ -86,9 +97,10 @@ router.get('/get-orders', async (req, res) => {
     res.json({ orders: user.orders });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal server error.' });
+    res.status(500).json({ message: 'Internal server error.', error: error.message });
   }
 });
+
 
 router.get('/get-all-orders', async (req, res) => {
   try {
