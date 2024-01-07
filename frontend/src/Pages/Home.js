@@ -201,8 +201,8 @@ const Home = ({ }) => {
                       alt={product.name}
                     /> */}
                     <Image
-                      height="366px"
-                      width="244px"
+                      height="487px"
+                      width="325px"
                       src={`http://localhost:4000${hoveredProductId === product._id ? product.image[1] : product.image[0]}`}
                       onMouseOver={() => handleHover(product._id)}
                       onMouseOut={handleHoverOut}
@@ -214,7 +214,7 @@ const Home = ({ }) => {
                     <Text color="blue.600" mb={2} fontSize="x">
                       ₹ {product.price}
                     </Text> */}
-                    <Text marginBottom={'5px'} size="xs">{product.name}<br /><Text fontSize='xs'>₹ {product.price}</Text></Text>
+                    <Text marginBottom={'5px'} size="xs">{product.name}<br /><Text m={1} fontSize='xs'>₹ {product.price}</Text></Text>
                   </Stack>
                 </CardBody>
 
@@ -233,7 +233,7 @@ const Home = ({ }) => {
                     {product.sizes[0].split(",").map((size, index) => (
                       <Button
                         key={index}
-                        size={"xs"}
+                        size={"sm"}
                         colorScheme="black"
                         borderColor={"#e8e8e1"}
                         variant="outline"
