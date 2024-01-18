@@ -10,6 +10,7 @@ const orderSchema = new mongoose.Schema({
       quantity: { type: Number, default: 1 },
       selectedSize:{ type: String,required:true },
       selectedColor:{ type: String,required:true },
+      totalPrice:{type: String,required:true}
     },
   ],
   totalAmount: { type: Number, required: true },
@@ -30,6 +31,7 @@ const userSchema = new mongoose.Schema({
       quantity: { type: Number, default: 1 },
       selectedSize:{ type: String,required:true },
       selectedColor:{ type: String,required:true },
+      totalPrice:{ type: String,required:true}
     },
   ],
   orders: [orderSchema],

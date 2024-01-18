@@ -29,16 +29,12 @@ router.post('/add-to-cart', async (req, res) => {
     const userId = decodedToken.userId;
 
     const { productId, quantity, selectedSize, selectedColor } = req.body;
-    // console.log(req.body)
+console.log(req.body)
     // Check if the product exists
     const product = await Product.findById(productId);
-
     if (!product) {
       return res.status(404).json({ message: 'Product not found.' });
     }
-
-    // Calculate total price based on product price and quantity
-    const totalPrice = product.price * parseInt(quantity, 10);
 
     // Update user's cart array
     const user = await User.findById(userId);
@@ -46,23 +42,18 @@ router.post('/add-to-cart', async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    const userCartItem = user.cart.find(item => (
-      item.productId.equals(productId) &&
-      item.selectedColor === selectedColor &&
-      item.selectedSize === selectedSize
-  ));
+    const userCartItem = user.cart.find(item => item.productId.equals(productId));
 
     if (userCartItem) {
       userCartItem.quantity += parseInt(quantity, 10);
-      userCartItem.totalPrice += totalPrice
     } else {
-      user.cart.push({ productId, quantity: parseInt(quantity, 10), selectedColor, selectedSize ,totalPrice,});
+      user.cart.push({ productId, quantity: parseInt(quantity, 10), selectedColor, selectedSize });
     }
 
     // Save changes to the User model
     await user.save();
 
-    res.json({ message: 'Product added to the cart successfully.', quantity, selectedSize, selectedColor,totalPrice});
+    res.json({ message: 'Product added to the cart successfully.' });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error.' });
