@@ -5,15 +5,33 @@ const router = express.Router();
 const Cart = require('../models/cart');
 const Product = require('../models/product');
 const User = require('../models/user')
+const jwt = require('jsonwebtoken');
+const { JWT_SECRET } = require('dotenv').config().parsed;
 
 
 router.post('/add-to-cart', async (req, res) => {
   try {
-    const { productId, quantity } = req.body;
-    const userId = req.body.userId; // Assuming you have user information in req.user
+    if (!req.headers.authorization) {
+      return res.status(401).json({ message: 'Authorization header missing.' });
+    }
 
+    // Split the Authorization header and get the token
+    const tokenParts = req.headers.authorization.split(' ');
+
+    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+      return res.status(401).json({ message: 'Invalid Authorization header format.' });
+    }
+
+    const token = tokenParts[1];
+
+    // Verify the token to get the user ID
+    const decodedToken = jwt.verify(token, JWT_SECRET);
+    const userId = decodedToken.userId;
+
+    const { productId, quantity, selectedSize, selectedColor } = req.body;
+console.log(req.body)
+    // Check if the product exists
     const product = await Product.findById(productId);
-
     if (!product) {
       return res.status(404).json({ message: 'Product not found.' });
     }
@@ -27,12 +45,13 @@ router.post('/add-to-cart', async (req, res) => {
     const userCartItem = user.cart.find(item => item.productId.equals(productId));
 
     if (userCartItem) {
-      userCartItem.quantity += parseInt(quantity, 10);;
+      userCartItem.quantity += parseInt(quantity, 10);
     } else {
-      user.cart.push({ productId, quantity: parseInt(quantity, 10) });
+      user.cart.push({ productId, quantity: parseInt(quantity, 10), selectedColor, selectedSize });
     }
 
-    await user.save(); // Save changes to the User model
+    // Save changes to the User model
+    await user.save();
 
     res.json({ message: 'Product added to the cart successfully.' });
   } catch (error) {
@@ -43,21 +62,37 @@ router.post('/add-to-cart', async (req, res) => {
 
 router.get('/get-cart', async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming you have user information in req.user
-
-    const cart = await Cart.findOne({ user: userId }).populate('items.productId');
-
-    if (!cart) {
-      return res.json({ items: [] });
+    // Check if the Authorization header is present
+    if (!req.headers.authorization) {
+      return res.status(401).json({ message: 'Authorization header missing.' });
     }
 
-    res.json({ items: cart.items });
+    // Split the Authorization header and get the token
+    const tokenParts = req.headers.authorization.split(' ');
+
+    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+      return res.status(401).json({ message: 'Invalid Authorization header format.' });
+    }
+
+    const token = tokenParts[1];
+
+    // Verify the token to get the user ID
+    const decodedToken = jwt.verify(token, JWT_SECRET);
+    const userId = decodedToken.userId;
+
+    // Find the user and populate the cart items with product details
+    const user = await User.findById(userId).populate('cart.productId');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    res.json({ items: user.cart });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error.' });
   }
 });
-
 
 router.post('/delete-from-cart', async (req, res) => {
   try {

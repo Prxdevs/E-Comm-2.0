@@ -42,6 +42,7 @@ const ProductDetails = () => {
 
   const { isOpen, onToggle, onClose } = useDisclosure();
   const { isOpenn, onTogglee, onClosee } = useDisclosure();
+  const token = localStorage.getItem('token');
   useEffect(() => {
     // Fetch product data based on the productId
     const fetchProduct = async () => {
@@ -69,22 +70,24 @@ const ProductDetails = () => {
 
   const addToCart = async () => {
     try {
-      // Call your cart API to add the product to the cart
       const response = await fetch("http://localhost:4000/cart/add-to-cart", {
         method: "POST",
         headers: {
+          Authorization: `Bearer ${token}`, // Make sure 'token' is defined
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          productId: product.id,
+          productId, // Make sure 'product.id' is defined
           quantity,
+          selectedSize,
+          selectedColor,
         }),
       });
-
+  
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);
       }
-
+  
       // Display a success toast
       toast({
         title: "Item added to cart",
