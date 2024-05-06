@@ -29,16 +29,13 @@ router.post('/add-to-cart', async (req, res) => {
     const userId = decodedToken.userId;
 
     const { productId, quantity, selectedSize, selectedColor } = req.body;
-    // console.log(req.body)
+    console.log(req.body)
     // Check if the product exists
     const product = await Product.findById(productId);
 
     if (!product) {
       return res.status(404).json({ message: 'Product not found.' });
     }
-
-    // Calculate total price based on product price and quantity
-    const totalPrice = product.price * parseInt(quantity, 10);
 
     // Update user's cart array
     const user = await User.findById(userId);
@@ -54,15 +51,14 @@ router.post('/add-to-cart', async (req, res) => {
 
     if (userCartItem) {
       userCartItem.quantity += parseInt(quantity, 10);
-      userCartItem.totalPrice += totalPrice
     } else {
-      user.cart.push({ productId, quantity: parseInt(quantity, 10), selectedColor, selectedSize ,totalPrice,});
+      user.cart.push({ productId, quantity: parseInt(quantity, 10), selectedColor, selectedSize });
     }
 
     // Save changes to the User model
     await user.save();
 
-    res.json({ message: 'Product added to the cart successfully.', quantity, selectedSize, selectedColor,totalPrice});
+    res.json({ message: 'Product added to the cart successfully.', quantity, selectedSize, selectedColor});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error.' });
@@ -138,6 +134,60 @@ router.post('/delete-from-cart', async (req, res) => {
     await user.save();
 
     res.json({ message: 'Product deleted from the cart successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Internal server error.' });
+  }
+});
+
+
+
+router.post('/add-to-wishlist', async (req, res) => {
+  try {
+    if (!req.headers.authorization) {
+      return res.status(401).json({ message: 'Authorization header missing.' });
+    }
+
+    // Split the Authorization header and get the token
+    const tokenParts = req.headers.authorization.split(' ');
+
+    if (tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
+      return res.status(401).json({ message: 'Invalid Authorization header format.' });
+    }
+
+    const token = tokenParts[1];
+
+    // Verify the token to get the user ID
+    const decodedToken = jwt.verify(token, JWT_SECRET);
+    const userId = decodedToken.userId;
+
+    const { productId } = req.body;
+    console.log(req.body)
+    // Check if the product exists
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found.' });
+    }
+
+    // Update user's cart array
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    const userWishlistItem = user.wishlist.find(item => (
+      item.productId.equals(productId)
+  ));
+
+   
+      user.wishlist.push({ productId });
+    
+
+    // Save changes to the User model
+    await user.save();
+
+    res.json({ message: 'Product added to the Wishlist successfully.'});
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal server error.' });

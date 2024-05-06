@@ -81,6 +81,7 @@ const Home = ({ }) => {
         console.log(response.data);
         const productsData = response.data;
         setProducts(productsData);
+        console.log("haha", productsData);
         setLoading(false);
       } catch (error) {
         setError(error);
@@ -172,14 +173,14 @@ const Home = ({ }) => {
             colorScheme="black"
             variant="outline"
             rounded="full"
-            onClick={() => setSelectedTag("Tranding")}
+            onClick={() => setSelectedTag("Trending")}
           >
-            Tranding
+            Trending
           </Button>
         </Stack>
       </Stack>
       <Stack spacing={4} align="center" justify="center" marginTop={2}>
-        <SimpleGrid columns={[1, 2, 5]} spacing={4} alignItems="stretch">
+        <SimpleGrid columns={[1, 2, 2,4]} spacing={4} alignItems="stretch">
           {filteredProducts.map((product) => (
             <Link
               to={{
@@ -188,8 +189,9 @@ const Home = ({ }) => {
               }}
               key={product._id}
             >
-              <Card shadow={"none"} maxW={["100%", "100%", "xs"]}>
-                <CardBody p={0}>
+              <Card shadow={"none"} maxW={["100%", "100%", "xs"]} height="487px"
+                width="325px">
+                <CardBody p={0} >
                   <Stack sx={{ objectFit: "contain" }}>
                     {/* <Image
                       height="366px"
@@ -201,8 +203,8 @@ const Home = ({ }) => {
                       alt={product.name}
                     /> */}
                     <Image
-                      height="487px"
-                      width="325px"
+                      
+                      objectFit='contain'
                       src={`http://localhost:4000${hoveredProductId === product._id ? product.image[1] : product.image[0]}`}
                       onMouseOver={() => handleHover(product._id)}
                       onMouseOut={handleHoverOut}
@@ -271,43 +273,32 @@ const Home = ({ }) => {
           <SimpleGrid columns={[1, 2, 4]} spacing={4} alignItems="stretch">
             {uniqueCategories.map((category) => (
               <React.Fragment key={category}>
-                {products
-                  .filter((product) => product.category === category)
-                  .map((product) => (
-                    <Link
-                      to={`/collection?category=${category}`}
-                      key={product._id}
-                    >
-                      <Card shadow={"none"} maxW={["100%", "100%", "xs"]}>
-                        <CardBody p={0}>
-                          {/* {product.images.map((image, index) => (
-                            <Image
-                              height="auto"
-                              width="100%"
-                              src={image.url}
-                              key={index}
-                            />
-                          ))} */}
-                          <Image
-                            height="auto"
-                            width="100%"
-                            src={product.image[0]}
-                            alt={product.name}
-                          />
-                          <Stack
-                            direction="column"
-                            align="center"
-                            justify="center"
-                          >
-                            <Heading size="sm">{category}</Heading>
-                          </Stack>
-                        </CardBody>
-                      </Card>
-                    </Link>
-                  ))}
+                {/* Find the first product for the current category */}
+                {products.find((product) => product.category === category) && (
+                  <Link to={`/collection?category=${category}`}>
+                    <Card shadow={"none"} maxW={["100%", "100%", "xs"]}>
+                      <CardBody p={0}>
+                        <Image
+                          height="auto"
+                          width="100%"
+                          src={`http://localhost:4000${products.find((product) => product.category === category).image[0]}`}
+                          alt={products.find((product) => product.category === category).name}
+                        />
+                        <Stack
+                          direction="column"
+                          align="center"
+                          justify="center"
+                        >
+                          <Heading size="sm">{category}</Heading>
+                        </Stack>
+                      </CardBody>
+                    </Card>
+                  </Link>
+                )}
               </React.Fragment>
             ))}
           </SimpleGrid>
+
         </Stack>
       </Stack>
     </>

@@ -87,7 +87,7 @@ const ProductDetails = () => {
       if (!response.ok) {
         throw new Error(`Network response was not ok: ${response.status}`);
       }
-  
+
       // Display a success toast
       toast({
         title: "Item added to cart",

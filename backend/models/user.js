@@ -10,7 +10,6 @@ const orderSchema = new mongoose.Schema({
       quantity: { type: Number, default: 1 },
       selectedSize:{ type: String,required:true },
       selectedColor:{ type: String,required:true },
-      totalPrice:{type: String,required:true}
     },
   ],
   totalAmount: { type: Number, required: true },
@@ -27,14 +26,24 @@ const userSchema = new mongoose.Schema({
   password: { type: String, required: true },
   cart: [
     {
-      productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
       quantity: { type: Number, default: 1 },
-      selectedSize:{ type: String,required:true },
-      selectedColor:{ type: String,required:true },
-      totalPrice:{ type: String,required:true}
+      selectedSize: { type: String, required: true },
+      selectedColor: { type: String, required: true },
     },
   ],
-  orders: [orderSchema],
+  wishlist: [
+    {
+      productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product" },
+    },
+  ],
+  orders: [
+    {
+      orderId: { type: mongoose.Schema.Types.ObjectId, ref: "Order" },
+      paymentId: { type: String },
+      paymentStatus: { type: String },
+    },
+  ],
 });
 
 userSchema.pre('save', async function (next) {

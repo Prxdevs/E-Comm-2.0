@@ -9,6 +9,7 @@ import Order from './Pages/Order';
 import User from './Pages/User';
 import Products from './Pages/Products';
 import OrdersPage from './Pages/Order';
+import Category from './Pages/Category';
 // import ProductDetails from './Pages/ProductDetails/index.js';
 // import Collection from './Pages/Collection/index.js';
 
@@ -29,6 +30,7 @@ function App() {
         {/* <Route path="/orders" element={<Order />} /> */}
         <Route path="/users" element={<User />} />
         <Route path="/products" element={<Products />} />
+        <Route path="/category" element={<Category />} />
         <Route path="/orders" element={<OrdersPage />} />
         {/* <Route path="/productdetails/:productId" element={<ProductDetails />} /> */}
         {/* <Route path="/collection" element={<Collection />} /> */}

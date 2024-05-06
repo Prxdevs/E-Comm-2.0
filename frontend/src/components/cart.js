@@ -17,8 +17,21 @@ import {
   ListIcon,
   HStack,
   Stack,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalFooter,
+  ModalBody,
+  ModalCloseButton,
+  Tabs,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
 } from '@chakra-ui/react';
-import { MdCheckCircle } from 'react-icons/md';
+import axios from 'axios';
+import { MdCheckCircle, MdLocationCity } from 'react-icons/md';
 
 const ShoppingCartDrawer = ({
   isCartOpen,
@@ -26,6 +39,16 @@ const ShoppingCartDrawer = ({
 
 }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [activeTab, setActiveTab] = useState(0); // 0 for phone number, 1 for address
+  const [phoneNumber, setPhoneNumber] = useState('');
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [address, setAddress] = useState('');
+  const [city, setCity] = useState('');
+  const [pincode, setPincode] = useState('');
+  const [isOrderModalOpen, setOrderModalOpen] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0);
+
   useEffect(() => {
     const getCartData = async () => {
       try {
@@ -49,8 +72,72 @@ const ShoppingCartDrawer = ({
     }
   }, [isCartOpen]);
 
-  
-  
+
+  const handleNextStep = () => {
+    setCurrentStep(currentStep + 1);
+  };
+
+  const handleCheckout = () => {
+    // Add logic for handling the checkout process
+    // You can show the order confirmation modal here
+    setOrderModalOpen(true);
+  };
+  const handleTabChange = (index) => {
+    setActiveTab(index);
+  };
+
+  const handlePhoneNumberChange = (e) => {
+    setPhoneNumber(e.target.value);
+  };
+
+  const handleNameChange = (e) => {
+    setName(e.target.value);
+  };
+  const handleEmailChange = (e) => {
+    setEmail(e.target.value);
+  };
+  const handleAddressChange = (e) => {
+    setAddress(e.target.value);
+  };
+  const handleCityChange = (e) => {
+    setCity(e.target.value);
+  };
+  const handlePincodeChange = (e) => {
+    setPincode(e.target.value);
+  };
+
+  const handleDone = () => {
+    if(phoneNumber &&  name && email && address &&  city && pincode){
+      const data = {
+        "name": name,
+        "email": email,
+        "phone": phoneNumber,
+        "address": address,
+        "city": city,
+        "pincode": pincode,
+      }
+
+      const token = localStorage.getItem('token');
+
+// Set the Authorization header with the token
+const headers = {
+  Authorization: `Bearer ${token}`,
+};
+
+      axios.post('http://localhost:4000/orders/checkout',data, {headers}).then(res => console.log(res)) .catch(error => {
+        console.error(error);
+      });
+    }
+
+    // axios.post('localhost:4000/orders/checkout')
+
+
+
+    // Close the modal after confirming the order
+    setOrderModalOpen(false);
+    setCurrentStep(0)
+  };
+
   return (
     <Drawer
       placement="right"
@@ -112,7 +199,7 @@ const ShoppingCartDrawer = ({
                           </Stack>
                           <Stack marginTop={20}>
                             <Text fontSize="xs" fontWeight="bold">
-                              Price: ${item.totalPrice}
+                              Price: ${item.productId.price}
                             </Text>
                           </Stack>
                         </HStack>
@@ -132,18 +219,137 @@ const ShoppingCartDrawer = ({
               <Stack
                 position="sticky"
                 bottom="0"
-                bg="white" 
+                bg="white"
                 p={4}
                 borderTop="1px solid"
                 borderColor="gray.200"
               >
                 <Text fontSize="lg" fontWeight="bold">
-                Subtotal: ${/* Add your logic to calculate subtotal */}
+                  Subtotal: {/* Add your logic to calculate subtotal */}
                 </Text>
-                <Button bg="black" color="white" _hover={{}} size="md" mt={2}>
+                <Button
+                  onClick={handleCheckout}
+                  bg="black"
+                  color="white"
+                  _hover={{}}
+                  size="md"
+                  mt={2}
+                >
                   Proceed to Checkout
                 </Button>
               </Stack>
+              <Modal
+                isOpen={isOrderModalOpen}
+                onClose={() => setOrderModalOpen(false)}
+              >
+                <ModalOverlay />
+                <ModalContent>
+                  <ModalHeader>Order Confirmation</ModalHeader>
+                  <ModalCloseButton />
+                  <ModalBody>
+                    <Tabs index={currentStep} onChange={handleTabChange}>
+                      <TabList>
+                        <Tab
+                          _selected={{
+                            borderBottom: "2px solid black", // Change the bottom border color for the active tab
+                            color: "black", // Change the text color for the active tab
+                          }}
+                        >
+                          1 Reciever Details
+                        </Tab>
+                        <Tab
+                          isDisabled={currentStep === 0}
+                          _selected={{
+                            borderBottom: "2px solid black", // Change the bottom border color for the active tab
+                            color: "black", // Change the text color for the active tab
+                          }}
+                        >
+                          2 Address
+                        </Tab>
+                      </TabList>
+                      <TabPanels>
+                        <TabPanel>
+                          <VStack spacing={4} align="stretch">
+                            <Text>Name:</Text>
+                            <Input
+                              type="tel"
+                              placeholder="Name"
+                              value={name}
+                              onChange={handleNameChange}
+                            />
+                            <Text>Phone:</Text>
+                            <Input
+                              type="tel"
+                              placeholder="Phone Number"
+                              value={phoneNumber}
+                              onChange={handlePhoneNumberChange}
+                            />
+                            <Text>email:</Text>
+                            <Input
+                              type="tel"
+                              placeholder="Email"
+                              value={email}
+                              onChange={handleEmailChange}
+                            />
+                            {/* <Button
+                    colorScheme="blue"
+                    onClick={handleNextStep}
+                  >
+                    Next Step
+                  </Button> */}
+                          </VStack>
+                        </TabPanel>
+                        <TabPanel>
+                          <VStack spacing={4} align="stretch">
+                            <Text>Address Line 1:</Text>
+                            <Input
+                              type="text"
+                              placeholder="Enter Address"
+                              value={address}
+                              onChange={handleAddressChange}
+                            />
+                            <Text>City:</Text>
+                            <Input
+                              type="text"
+                              placeholder="Enter City"
+                              value={city}
+                              onChange={handleCityChange}
+                            />
+                            <Text>Pincode:</Text>
+                            <Input
+                              type="text"
+                              placeholder="Enter Pincode"
+                              value={pincode}
+                              onChange={handlePincodeChange}
+                            />
+                          </VStack>
+                        </TabPanel>
+                      </TabPanels>
+                    </Tabs>
+                  </ModalBody>
+                  <ModalFooter>
+                    {currentStep === 0 ? (
+                      <Button
+                        bg="black"
+                        _hover={{}}
+                        color="white"
+                        onClick={handleNextStep}
+                      >
+                        Next Step
+                      </Button>
+                    ) : (
+                      <Button
+                        bg="black"
+                        _hover={{}}
+                        color="white"
+                        onClick={handleDone}
+                      >
+                        Done
+                      </Button>
+                    )}
+                  </ModalFooter>
+                </ModalContent>
+              </Modal>
             </Box>
           </DrawerBody>
         </DrawerContent>

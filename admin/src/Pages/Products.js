@@ -1,6 +1,6 @@
 // ProductPage.js
 import React, { useState, useEffect } from 'react';
-import { Box, Heading, Table, Thead, Tbody, Tr, Th, Td, Spinner ,Image,HStack,VStack,IconButton, ButtonGroup, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, FormControl, FormLabel, Input} from '@chakra-ui/react';
+import { Box, Heading, Table, Thead, Tbody, Tr, Th, Td, Spinner ,Image,HStack,VStack,IconButton, ButtonGroup, Button, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, Stack, FormControl, FormLabel, Input, Select} from '@chakra-ui/react';
 import { EditIcon,DeleteIcon} from '@chakra-ui/icons'
 import axios from 'axios';
 
@@ -11,6 +11,7 @@ const ProductPage = () => {
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [isAddModalOpen, setAddModalOpen] = useState(false);
   const [imageList, setImageList] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [formData, setFormData] = useState({
     name: '',
     category: '',
@@ -25,6 +26,20 @@ const ProductPage = () => {
     image: '',
   });
   
+  const fetchCategories = async () => {
+    try {
+      const response = await axios.get('http://localhost:4000/admin/category', {
+        withCredentials: true,
+      });
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchCategories();
+  }, []);
   const handleImageChange = (e) => {
     const files = Array.from(e.target.files);
   
@@ -280,8 +295,22 @@ const ProductPage = () => {
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                   </FormControl>
-
                   <FormControl>
+                <FormLabel>Category</FormLabel>
+                  <Select
+                    name="category"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
+                  {/* <FormControl>
                     <FormLabel>Category</FormLabel>
                     <Input
                       type="text"
@@ -289,7 +318,7 @@ const ProductPage = () => {
                       value={formData.category}
                       onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                     />
-                  </FormControl>
+                  </FormControl> */}
 
                   <FormControl>
                     <FormLabel>Rating</FormLabel>
@@ -422,14 +451,20 @@ const ProductPage = () => {
                   </FormControl>
 
                   <FormControl>
-                    <FormLabel>Category</FormLabel>
-                    <Input
-                      type="text"
-                      name="category"
-                      value={formData.category}
-                      onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                    />
-                  </FormControl>
+                <FormLabel>Category</FormLabel>
+                  <Select
+                    name="category"
+                    value={formData.category}
+                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                  >
+                    <option value="">Select Category</option>
+                    {categories.map((category) => (
+                      <option key={category._id} value={category._id}>
+                        {category.name}
+                      </option>
+                    ))}
+                  </Select>
+                </FormControl>
 
                   <FormControl>
                     <FormLabel>Rating</FormLabel>

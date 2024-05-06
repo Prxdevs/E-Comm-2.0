@@ -19,6 +19,9 @@ const orderSchema = new mongoose.Schema({
   orderStatus: { type: String, default:'Pending' },
   address: { type: String },
   city: { type: String },
+  phone: { type: String },
+  name: { type: String },
+  email: { type: String },
   pincode: { type: Number },
   paymentId: { type: String }, // Add payment ID field
   paymentStatus: { type: String }, // Add payment status field

@@ -56,14 +56,14 @@ const Collection = ({  }) => {
         const productsData = await response.json();
         setProducts(productsData);
         setLoading(false);
-
+console.log(productsData)
         const sizesSet = new Set(
           productsData.flatMap((product) => product.sizes)
         );
         const uniqueSizesArray = [...sizesSet];
         setUniqueSizes(uniqueSizesArray);
 
-
+// console.log(uniqueSizes)
         const colorSet = new Set(
           productsData.flatMap((product) => product.color)
         );
@@ -85,17 +85,19 @@ const Collection = ({  }) => {
   }, []);
 
   
-
+console.log(sizeFilter)
   const filteredProducts = products.filter((product) => {
     return (
       (category ? product.category === category : true) &&
-      (sizeFilter.length === 0 ? true : product.sizes.some((size) => sizeFilter.includes(size))) &&
+      (sizeFilter.length === 0 ? true : product.sizes.some((size) => sizeFilter.includes(size)))&&
       (priceFilter ? product.price <= parseInt(priceFilter) : true) &&
       (tagFilter ? product.tag === tagFilter : true) &&
       (typeFilter ? product.type === typeFilter : true) &&
       (colorFilter.length === 0 ? true : product.color.some((color) => colorFilter.includes(color))) 
+      
     );
   });
+  console.log('sdsd',filteredProducts)
    
 
     useEffect(() => {
@@ -227,7 +229,7 @@ const Collection = ({  }) => {
                 </Text>
               <Collapse in={isSizeFilterOpen}>
                   <VStack align="start" spacing={2}>
-                  <Checkbox
+                  {/* <Checkbox
                       isChecked={sizeFilter.length === uniqueSizes.length}
                       onChange={() => {
                         setSizeFilter(
@@ -236,8 +238,20 @@ const Collection = ({  }) => {
                       }}
                     >
                       Select All
-                    </Checkbox>
-                    {uniqueSizes.map((size) => (
+                    </Checkbox> */}
+                    {uniqueSizes.map((sizesString) => {
+                      const sizesArray = sizesString.split(','); // Split the sizes string into an array
+                      return sizesArray.map((size) => (
+                        <Checkbox
+                          key={size}
+                          isChecked={sizeFilter.includes(size)}
+                          onChange={() => handleSizeChange(size)}
+                        >
+                          {size}
+                        </Checkbox>
+                      ));
+                    })}
+                    {/* {uniqueSizes.map((size) => (
                       <Checkbox
                       key={size}
                       isChecked={sizeFilter.includes(size)}
@@ -251,7 +265,7 @@ const Collection = ({  }) => {
                         </HStack>
                        
                       </Checkbox>
-                    ))}
+                    ))} */}
                   </VStack>
                 </Collapse>
                 </VStack>
