@@ -27,7 +27,7 @@ import "slick-carousel/slick/slick-theme.css";
 import axios from "axios";
 import "@fontsource/pt-sans";
 
-const Home = ({ }) => {
+const Home = ({}) => {
   const sliderSettings = {
     // dots: true,
     infinite: true,
@@ -151,13 +151,21 @@ const Home = ({ }) => {
         </Slider>
       </Box>
 
-      <Stack direction="column" spacing={4} align="center" justify="center">
-        <Stack direction="row" spacing={4} mb={4}>
+      <Stack
+        direction="column"
+        spacing={4}
+        align="center"
+        justify="center"
+        display="flex"
+        flexWrap="wrap"
+      >
+        <Stack direction="row" spacing={4} mb={4} width={{ base: "100%", md: "auto" }}>
           <Button
             colorScheme="black"
             variant="outline"
             rounded="full"
             onClick={() => setSelectedTag("New Drops")}
+            width={{ base: "100%", md: "auto" }}
           >
             New Drops
           </Button>
@@ -166,6 +174,7 @@ const Home = ({ }) => {
             variant="outline"
             rounded="full"
             onClick={() => setSelectedTag("Winter Flex")}
+            width={{ base: "100%", md: "auto" }}
           >
             Winter Flex
           </Button>
@@ -174,13 +183,14 @@ const Home = ({ }) => {
             variant="outline"
             rounded="full"
             onClick={() => setSelectedTag("Trending")}
+            width={{ base: "100%", md: "auto" }}
           >
             Trending
           </Button>
         </Stack>
       </Stack>
       <Stack spacing={4} align="center" justify="center" marginTop={2}>
-        <SimpleGrid columns={[1, 2, 2,4]} spacing={4} alignItems="stretch">
+        <SimpleGrid columns={[1, 2, 2, 4]} spacing={4} alignItems="stretch">
           {filteredProducts.map((product) => (
             <Link
               to={{
@@ -189,9 +199,13 @@ const Home = ({ }) => {
               }}
               key={product._id}
             >
-              <Card shadow={"none"} maxW={["100%", "100%", "xs"]} height="487px"
-                width="325px">
-                <CardBody p={0} >
+              <Card
+                shadow={"none"}
+                maxW={["100%", "100%", "xs"]}
+                height="487px"
+                width="325px"
+              >
+                <CardBody p={0}>
                   <Stack sx={{ objectFit: "contain" }}>
                     {/* <Image
                       height="366px"
@@ -203,9 +217,12 @@ const Home = ({ }) => {
                       alt={product.name}
                     /> */}
                     <Image
-                      
-                      objectFit='contain'
-                      src={`http://localhost:4000${hoveredProductId === product._id ? product.image[1] : product.image[0]}`}
+                      objectFit="contain"
+                      src={`http://localhost:4000${
+                        hoveredProductId === product._id
+                          ? product.image[1]
+                          : product.image[0]
+                      }`}
                       onMouseOver={() => handleHover(product._id)}
                       onMouseOut={handleHoverOut}
                       alt={product.name}
@@ -216,7 +233,13 @@ const Home = ({ }) => {
                     <Text color="blue.600" mb={2} fontSize="x">
                       ₹ {product.price}
                     </Text> */}
-                    <Text marginBottom={'5px'} size="xs">{product.name}<br /><Text m={1} fontSize='xs'>₹ {product.price}</Text></Text>
+                    <Text marginBottom={"5px"} size="xs">
+                      {product.name}
+                      <br />
+                      <Text m={1} fontSize="xs">
+                        ₹ {product.price}
+                      </Text>
+                    </Text>
                   </Stack>
                 </CardBody>
 
@@ -281,8 +304,16 @@ const Home = ({ }) => {
                         <Image
                           height="auto"
                           width="100%"
-                          src={`http://localhost:4000${products.find((product) => product.category === category).image[0]}`}
-                          alt={products.find((product) => product.category === category).name}
+                          src={`http://localhost:4000${
+                            products.find(
+                              (product) => product.category === category
+                            ).image[0]
+                          }`}
+                          alt={
+                            products.find(
+                              (product) => product.category === category
+                            ).name
+                          }
                         />
                         <Stack
                           direction="column"
@@ -298,7 +329,6 @@ const Home = ({ }) => {
               </React.Fragment>
             ))}
           </SimpleGrid>
-
         </Stack>
       </Stack>
     </>

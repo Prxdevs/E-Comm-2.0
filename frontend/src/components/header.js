@@ -94,9 +94,9 @@ const Header = () => {
       </HStack>
 
       {/* Center (Logo) */}
-      <Box align="center" color="black">
+      <Box display='flex' justifyContent='center' alignItems='center' align="center" color="black" width='100px' height='100px'>
         <Link to="/">
-          <img src={logo} height={"50%"} width={"50%"}></img>
+          <img src={logo} width='100%' height='100%'></img>
         </Link>
       </Box>
 
